@@ -31,6 +31,7 @@ let ship;
 let bullets;
 let lastFired = 0;
 let target;
+let background;
 
 let Bullet = new Phaser.Class({
 
@@ -41,7 +42,7 @@ let Bullet = new Phaser.Class({
     // Bullet Constructor
     function Bullet (scene)
     {
-        Phaser.GameObjects.Image.call(this, scene, 0, 0, 'heroBulletShip');
+        Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
         this.speed = 1;
         this.born = 0;
         this.direction = 0;
@@ -89,11 +90,11 @@ let Bullet = new Phaser.Class({
 
 function preload() {
     this.load.setBaseURL('http://localhost:8080/');
-    this.load.image("ship", "image/Character/Frame/ship-7left.png.png");
-    this.load.image("testScreen", "image/cadrillage.png");
-    this.load.image("white", "image/white.png");
-    this.load.image("heroBulletShip", "image/Character/bullet.png");
-    this.load.image("target", "image/target.png");
+    this.load.image("ship", "assets/sprites/Character/Frame/ship-7left.png.png");
+    this.load.image("ship2", "assets/sprites/Character/ship2.png");
+    this.load.image("bullet", "assets/sprites/Bullet/bulletLaser.png");
+    this.load.image("target", "assets/sprites/Ui/target.png");
+    this.load.image("background", "assets/sprites/Decor/")
 }
 
 function create() {
@@ -107,8 +108,6 @@ function create() {
     enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
     // Add background player, enemy, reticle, healthpoint sprites
-    this.add.image(0, 0, "white");
-    this.add.image(0, 0, "testScreen");
     ship = this.physics.add.sprite(100, 100, "ship");
     target = this.physics.add.sprite(100,150,"target").setScale(4);   
     
