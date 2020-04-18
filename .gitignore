@@ -1,5 +1,4 @@
-#
-mongoose*.exe
+#mongoose*.exe
 # Godot-specific ignores
 .import/
 export.cfg
