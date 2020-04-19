@@ -148,8 +148,10 @@ function create() {
    // lifeItem = this.physics.add.sprite(400,300,"life");
     items = this.physics.add.group({
         key: 'powerup',
-        setXY: { x: 400, y: 100}
+        frameQuantity: 40
     });
+    let rect = new Phaser.Geom.Rectangle(10,10, 3980, 3980);
+    Phaser.Actions.RandomRectangle(items.getChildren(),rect);
 
     
     // Add sounds
