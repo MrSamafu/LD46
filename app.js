@@ -21,6 +21,8 @@ const config = {
             shipBullets: null,
             enemyBullets: null,
             time: 0,
+            createStarfield: createStarfield,
+            createAsteroids: createAsteroids
         }
     }
 
@@ -107,6 +109,11 @@ function preload() {
     this.load.image("fuel","assets/sprites/PowerUp/fuel.png");
     this.load.image("life","assets/sprites/PowerUp/Life.png");
     this.load.image("powerup","assets/sprites/PowerUp/powerup.png");
+    this.load.image("starLight1", "assets/sprites/Decor/starsLight1.png");
+    this.load.image("starLight2", "assets/sprites/Decor/starsLight2.png");
+    this.load.image("starLight3", "assets/sprites/Decor/starsLight3.png");
+    this.load.image("starLight4", "assets/sprites/Decor/starsLight4.png");
+    this.load.image("asteroid", "assets/sprites/Decor/asteroide.png");
 
     //sound load
     this.load.audio("laser", "assets/sounds/laser.wav");
@@ -120,7 +127,11 @@ function create() {
     console.log(this);
 
     // Set world bounds
-    this.physics.world.setBounds(0, 0, config.width, config.height);
+    this.physics.world.setBounds(0, 0, 4000, 4000);
+    this.cameras.main.setBounds(0,0,4000,4000).setName("main");
+    this.createStarfield();
+    this.createAsteroids();
+    
 
     // Add 2 groups for Bullet objects
     shipBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
@@ -134,10 +145,15 @@ function create() {
     ship = this.physics.add.sprite(config.width/2, config.height/2, "ship");
     target = this.physics.add.sprite(100,150,"target").setScale(4);
     enemy = this.physics.add.sprite(100, 100, "enemy1");
-    ammoItem = this.physics.add.sprite(400,100, "ammo");
-    fuelItem = this.physics.add.sprite(400,200, "fuel");
-    lifeItem = this.physics.add.sprite(400,300,"life");
-    powerUpItem =this.physics.add.sprite(400, 400, "powerup");
+    //ammoItem = this.physics.add.sprite(400,100, "ammo");
+   // fuelItem = this.physics.add.sprite(400,200, "fuel");
+   // lifeItem = this.physics.add.sprite(400,300,"life");
+    items = this.physics.add.group({
+        key: 'powerup',
+        frameQuantity: 40
+    });
+    let rect = new Phaser.Geom.Rectangle(10,10, 3980, 3980);
+    Phaser.Actions.RandomRectangle(items.getChildren(),rect);
 
     
     // Add sounds
@@ -152,6 +168,10 @@ function create() {
     target.setOrigin(0.5, 0.5).setDisplaySize(18, 18).setCollideWorldBounds(true);
     enemy.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true);
 
+    //Set camera
+    this.cameras.main.startFollow(ship, true, 0.08, 0.08);
+    this.cameras.main.setZoom(1.2);
+
     // Set sprite variables
     ship.health = 300;
     ship.fuel = 15;
@@ -161,6 +181,8 @@ function create() {
 
     // Set camera properties
 
+    //Detect item collision
+    this.physics.add.overlap(ship, items, collectItems, null, this);
 
     // Creates object for input with WASD kets
     moveKeys = this.input.keyboard.addKeys({
@@ -269,11 +291,60 @@ function create() {
     }, this);
 }
 //collect item
-function collect(ship, item){
+function collectItems(ship, item){
     item.disableBody(true, true);
 
-}
+    ship.health += 15;
+    ship.ammo += 15;
+    ship.fuel += 15;
 
+}
+// Map of stars
+function createStarfield ()
+{
+    //  Starfield background
+
+    //  Note the scrollFactor values which give them their 'parallax' effect
+
+    var group = this.add.group({ key: 'starLight1', frameQuantity:50 });
+
+    group.createMultiple({ key: 'starLight2', frameQuantity: 50 });
+    group.createMultiple({ key: 'starLight3', frameQuantity: 50 });
+    group.createMultiple({ key: 'starLight4', frameQuantity: 50 });
+    
+
+    var rect = new Phaser.Geom.Rectangle(0, 0, 4000, 4000);
+
+    Phaser.Actions.RandomRectangle(group.getChildren(), rect);
+
+    group.children.iterate(function (child, index) {
+        var sf = Math.max(0.3, Math.random());
+        if (child.texture.key === 'bigStar')
+        {
+            sf = 0.2;
+        }
+        child.setScrollFactor(sf);
+    }, this);
+}
+//  Create some random asteroids moving slowly around
+function createAsteroids ()
+{
+    for (var i = 0; i < 40; i++)
+    {
+        var x = Phaser.Math.Between(100, 3900);
+        var y = Phaser.Math.Between(100, 3900);
+
+        var conf = this.physics.add.group({
+            bounceX: 1,
+            bounceY: 1,
+            collideWorldBounds: true
+        })
+        let asteroids = conf.create(Phaser.Math.Between(20, 3000),Phaser.Math.Between(20, 3000),"asteroid")
+
+        asteroids.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true);
+        asteroids.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100));
+    }
+}
 function enemyHitCallback(enemyHit, bulletHit)
 {
     // Reduce health of enemy
