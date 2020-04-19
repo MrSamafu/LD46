@@ -21,7 +21,8 @@ const config = {
             shipBullets: null,
             enemyBullets: null,
             time: 0,
-            createStarfield: createStarfield
+            createStarfield: createStarfield,
+            createAsteroids: createAsteroids
         }
     }
 
@@ -112,7 +113,7 @@ function preload() {
     this.load.image("starLight2", "assets/sprites/Decor/starsLight2.png");
     this.load.image("starLight3", "assets/sprites/Decor/starsLight3.png");
     this.load.image("starLight4", "assets/sprites/Decor/starsLight4.png");
-    this.load.image("asteroide", "assets/sprites/Decor/asteroide.png");
+    this.load.image("asteroid", "assets/sprites/Decor/asteroide.png");
 
     //sound load
     this.load.audio("laser", "assets/sounds/laser.wav");
@@ -129,6 +130,7 @@ function create() {
     this.physics.world.setBounds(0, 0, 4000, 4000);
     this.cameras.main.setBounds(0,0,4000,4000).setName("main");
     this.createStarfield();
+    this.createAsteroids();
     
 
     // Add 2 groups for Bullet objects
@@ -323,6 +325,25 @@ function createStarfield ()
         }
         child.setScrollFactor(sf);
     }, this);
+}
+//  Create some random asteroids moving slowly around
+function createAsteroids ()
+{
+    for (var i = 0; i < 40; i++)
+    {
+        var x = Phaser.Math.Between(100, 3900);
+        var y = Phaser.Math.Between(100, 3900);
+
+        var conf = this.physics.add.group({
+            bounceX: 1,
+            bounceY: 1,
+            collideWorldBounds: true
+        })
+        let asteroids = conf.create(Phaser.Math.Between(20, 3000),Phaser.Math.Between(20, 3000),"asteroid")
+
+        asteroids.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true);
+        asteroids.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100));
+    }
 }
 function enemyHitCallback(enemyHit, bulletHit)
 {
