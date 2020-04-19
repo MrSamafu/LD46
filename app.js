@@ -14,11 +14,11 @@ const config = {
         create: create,
         update: update,
         extend: {
-            player: null,
+            ship: null,
             healthpoints: null,
             reticle: null,
             moveKeys: null,
-            playerBullets: null,
+            shipBullets: null,
             enemyBullets: null,
             time: 0,
         }
@@ -69,7 +69,7 @@ let Bullet = new Phaser.Class({
             this.ySpeed = -this.speed*Math.cos(this.direction);
         }
 
-        this.rotation = shooter.rotation; // angle bullet with shooters rotation
+        this.rotation = shooter.rotation + 90; // angle bullet with shooters rotation
         this.born = 0; // Time since new bullet spawned
     },
 
@@ -94,7 +94,8 @@ function preload() {
     this.load.image("ship2", "assets/sprites/Character/ship2.png");
     this.load.image("bullet", "assets/sprites/Bullet/bulletLaser.png");
     this.load.image("target", "assets/sprites/Ui/target.png");
-    this.load.image("background", "assets/sprites/Decor/")
+    this.load.image("background", "assets/sprites/Decor/");
+    this.load.image("enemy1", "assets/sprites/Enemy/enemy/enemy14.png");
 }
 
 function create() {
@@ -104,20 +105,28 @@ function create() {
     this.physics.world.setBounds(0, 0, 1600, 1200);
 
     // Add 2 groups for Bullet objects
-    playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+    shipBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
     enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
     // Add background player, enemy, reticle, healthpoint sprites
     ship = this.physics.add.sprite(100, 100, "ship");
-    target = this.physics.add.sprite(100,150,"target").setScale(4);   
+    target = this.physics.add.sprite(100,150,"target").setScale(4);
+    enemy = this.physics.add.sprite(300, 600, "enemy1");   
     
     // Set image/sprite properties
     ship.body.collideWorldBounds = true;
     ship.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true).setDrag(500, 500);
     target.setOrigin(0.5, 0.5).setDisplaySize(18, 18).setCollideWorldBounds(true);
+    enemy.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true);
 
     // Set sprite variables
+    ship.health = 3;
+    enemy.health = 3;
+    enemy.lastFired = 0;
+
     // Set camera properties
+
+
     // Creates object for input with WASD kets
     moveKeys = this.input.keyboard.addKeys({
         'up': Phaser.Input.Keyboard.KeyCodes.Z,
@@ -129,15 +138,19 @@ function create() {
     // Enables movement of player with WASD keys
     this.input.keyboard.on('keydown_Z', function (event) {
         ship.setAccelerationY(-800);
+        
     });
     this.input.keyboard.on('keydown_S', function (event) {
         ship.setAccelerationY(800);
+        
     });
     this.input.keyboard.on('keydown_Q', function (event) {
         ship.setAccelerationX(-800);
+        
     });
     this.input.keyboard.on('keydown_D', function (event) {
         ship.setAccelerationX(800);
+        
     });
 
     // Stops player acceleration on uppress of WASD keys
@@ -157,21 +170,21 @@ function create() {
         if (moveKeys['left'].isUp)
             ship.setAccelerationX(0);
     });
-
     // Fires bullet from player on left click of mouse
     this.input.on('pointerdown', function (pointer, time, lastFired) {
         if (ship.active === false)
             return;
 
     // Get bullet from bullets group
-        var bullet = playerBullets.get().setActive(true).setVisible(true);
+        var bullet = shipBullets.get().setActive(true).setVisible(true);
 
         if (bullet)
         {
             bullet.fire(ship, target);
-            //this.physics.add.collider(enemy, bullet, enemyHitCallback);
+            this.physics.add.collider(enemy, bullet, enemyHitCallback);
         }
     }, this);
+
 
     // Pointer lock will only work after mousedown
     game.canvas.addEventListener('mousedown', function () {
@@ -192,6 +205,74 @@ function create() {
             target.y += pointer.movementY;
         }
     }, this);
+}
+function enemyHitCallback(enemyHit, bulletHit)
+{
+    // Reduce health of enemy
+    if (bulletHit.active === true && enemyHit.active === true)
+    {
+        enemyHit.health = enemyHit.health - 1;
+        console.log("Enemy hp: ", enemyHit.health);
+
+        // Kill enemy if health <= 0
+        if (enemyHit.health <= 0)
+        {
+           enemyHit.setActive(false).setVisible(false);
+        }
+
+        // Destroy bullet
+        bulletHit.setActive(false).setVisible(false);
+    }
+}
+function playerHitCallback(playerHit, bulletHit)
+{
+    // Reduce health of player
+    if (bulletHit.active === true && playerHit.active === true)
+    {
+        playerHit.health = playerHit.health - 1;
+        console.log("Player hp: ", playerHit.health);
+
+        // Kill hp sprites and kill player if health <= 0
+        if (playerHit.health == 2)
+        {
+            //Make here stateOfLife or lifeBar
+        }
+        else if (playerHit.health == 1)
+        {
+            //Make here stateOfLife or lifeBar
+        }
+        else
+        {
+            //Make here stateOfLife or lifeBar
+            playerHit.setActive(false).setVisible(false);
+            // Game over state should execute here
+        }
+
+        // Destroy bullet
+        bulletHit.setActive(false).setVisible(false);
+    }
+}
+function enemyFire(enemy, player, time, gameObject)
+{
+    if (enemy.active === false)
+    {
+        return;
+    }
+
+    if ((time - enemy.lastFired) > 1000)
+    {
+        enemy.lastFired = time;
+
+        // Get bullet from bullets group
+        var bullet = enemyBullets.get().setActive(true).setVisible(true);
+
+        if (bullet)
+        {
+            bullet.fire(enemy, player);
+            // Add collider between bullet and player
+            gameObject.physics.add.collider(player, bullet, playerHitCallback);
+        }
+    }
 }
 // Ensures sprite speed doesnt exceed maxVelocity while update is called
 function constrainVelocity(sprite, maxVelocity)
@@ -230,14 +311,24 @@ function constrainReticle(reticle)
     else if (distY < -720)
         target.y = ship.y-720;
 }
-
-
+// Enable enemy movement
+function enemyMove(enemy, ship, gameObject){
+    let distance = Phaser.Math.Distance.Between(enemy.x, enemy.y, ship.x, ship.y);
+    
+        if(distance < 4){
+            enemy.body.reset(ship.x, ship.y);
+        }
+        else{
+            gameObject.physics.moveToObject(enemy, ship , 200);
+        }
+}
 function update(time, delta) {
     
     // Rotates player to face towards reticle
     ship.rotation = Phaser.Math.Angle.Between(ship.x, ship.y, target.x, target.y);
 
     // Rotates enemy to face towards player
+    enemy.rotation = Phaser.Math.Angle.Between(enemy.x, enemy.y, ship.x, ship.y);
 
     //Make reticle move with player
     target.body.velocity.x = ship.body.velocity.x;
@@ -250,5 +341,9 @@ function update(time, delta) {
     constrainReticle(target);
 
     // Make enemy fire
+    enemyFire(enemy, ship, time, this);
+
+    //Move enemy
+    enemyMove(enemy, ship, this);
 
 }
