@@ -32,6 +32,8 @@ let bullets;
 let lastFired = 0;
 let target;
 let background;
+let textAmmo;
+let textLife;
 
 let Bullet = new Phaser.Class({
 
@@ -120,6 +122,10 @@ function create() {
     shipBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
     enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
+    //Add Text
+    textShipInfo = this.add.text(10, 10 , '', {fill: "#00ff00"});
+    
+
     // Add background player, enemy, reticle, healthpoint sprites
     ship = this.physics.add.sprite(config.width/2, config.height/2, "ship");
     target = this.physics.add.sprite(100,150,"target").setScale(4);
@@ -139,6 +145,8 @@ function create() {
 
     // Set sprite variables
     ship.health = 300;
+    ship.fuel = 500;
+    ship.ammo = 150;
     enemy.health = 3;
     enemy.lastFired = 0;
 
@@ -155,18 +163,22 @@ function create() {
 
     // Enables movement of player with WASD keys
     this.input.keyboard.on('keydown_Z', function (event) {
+        ship.fuel -=1;
         ship.setAccelerationY(-800);
         
     });
     this.input.keyboard.on('keydown_S', function (event) {
+        ship.fuel -=1;
         ship.setAccelerationY(800);
         
     });
     this.input.keyboard.on('keydown_Q', function (event) {
+        ship.fuel -=1;
         ship.setAccelerationX(-800);
         
     });
     this.input.keyboard.on('keydown_D', function (event) {
+        ship.fuel -=1;
         ship.setAccelerationX(800);
         
     });
@@ -174,23 +186,28 @@ function create() {
     // Stops player acceleration on uppress of WASD keys
     this.input.keyboard.on('keyup_Z', function (event) {
         if (moveKeys['down'].isUp)
+            ship.fuel -=1;
             ship.setAccelerationY(0);
     });
     this.input.keyboard.on('keyup_S', function (event) {
         if (moveKeys['up'].isUp)
+            ship.fuel -=1;
             ship.setAccelerationY(0);
     });
     this.input.keyboard.on('keyup_Q', function (event) {
         if (moveKeys['right'].isUp)
+            ship.fuel -=1;
             ship.setAccelerationX(0);
     });
     this.input.keyboard.on('keyup_D', function (event) {
         if (moveKeys['left'].isUp)
+            ship.fuel -=1;
             ship.setAccelerationX(0);
     });
     // Fires bullet from player on left click of mouse
     this.input.on('pointerdown', function (pointer, time, lastFired) {
         laser.play();
+        ship.ammo -= 1;
         if (ship.active === false)
             return;
 
@@ -335,7 +352,19 @@ function enemyMove(enemy, ship, gameObject){
             gameObject.physics.moveToObject(enemy, ship , 200);
         }
 }
+// Refresh info interface
+function interface(ship, text){
+    text.setText([
+        'Life : ' + ship.health,
+        'Ammo : ' + ship.ammo,
+        'Fuel : ' + ship.fuel
+    ])
+}
+
 function update(time, delta) {
+
+    //Display shipInfo
+    interface(ship, textShipInfo);
     
     // Rotates player to face towards reticle
     ship.rotation = Phaser.Math.Angle.Between(ship.x, ship.y, target.x, target.y);
