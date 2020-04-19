@@ -1,5 +1,7 @@
 #webserver mongoose https://cesanta.com/binary.html
 mongoose*.exe
+#
+V2-LD46/
 # Godot-specific ignores
 .import/
 export.cfg
