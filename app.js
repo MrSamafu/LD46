@@ -143,10 +143,13 @@ function create() {
     ship = this.physics.add.sprite(config.width/2, config.height/2, "ship");
     target = this.physics.add.sprite(100,150,"target").setScale(4);
     enemy = this.physics.add.sprite(100, 100, "enemy1");
-    ammoItem = this.physics.add.sprite(400,100, "ammo");
-    fuelItem = this.physics.add.sprite(400,200, "fuel");
-    lifeItem = this.physics.add.sprite(400,300,"life");
-    powerUpItem =this.physics.add.sprite(400, 400, "powerup");
+    //ammoItem = this.physics.add.sprite(400,100, "ammo");
+   // fuelItem = this.physics.add.sprite(400,200, "fuel");
+   // lifeItem = this.physics.add.sprite(400,300,"life");
+    items = this.physics.add.group({
+        key: 'powerup',
+        setXY: { x: 400, y: 100}
+    });
 
     
     // Add sounds
@@ -174,6 +177,8 @@ function create() {
 
     // Set camera properties
 
+    //Detect item collision
+    this.physics.add.overlap(ship, items, collectItems, null, this);
 
     // Creates object for input with WASD kets
     moveKeys = this.input.keyboard.addKeys({
@@ -282,8 +287,12 @@ function create() {
     }, this);
 }
 //collect item
-function collect(ship, item){
+function collectItems(ship, item){
     item.disableBody(true, true);
+
+    ship.health += 15;
+    ship.ammo += 15;
+    ship.fuel += 15;
 
 }
 // Map of stars
