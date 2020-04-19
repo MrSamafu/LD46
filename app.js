@@ -89,13 +89,24 @@ let Bullet = new Phaser.Class({
 });
 
 function preload() {
+
+    //URL server
     this.load.setBaseURL('http://localhost:8080/');
+
+    //image load
     this.load.image("ship", "assets/sprites/Character/Frame/ship-7left.png.png");
     this.load.image("ship2", "assets/sprites/Character/ship2.png");
     this.load.image("bullet", "assets/sprites/Bullet/bulletLaser.png");
     this.load.image("target", "assets/sprites/Ui/target.png");
     this.load.image("background", "assets/sprites/Decor/");
     this.load.image("enemy1", "assets/sprites/Enemy/enemy/enemy14.png");
+
+    //sound load
+    this.load.audio("laser", "assets/sounds/laser.wav");
+    this.load.audio("explo","assets/sounds/explo.wav");
+    this.load.audio("powerUp","assets/sounds/powerUp.wav");
+    this.load.audio("dammage","assets/sounds/dammage.wav");
+
 }
 
 function create() {
@@ -111,7 +122,13 @@ function create() {
     // Add background player, enemy, reticle, healthpoint sprites
     ship = this.physics.add.sprite(100, 100, "ship");
     target = this.physics.add.sprite(100,150,"target").setScale(4);
-    enemy = this.physics.add.sprite(300, 600, "enemy1");   
+    enemy = this.physics.add.sprite(300, 600, "enemy1");
+    
+    // Add sounds
+    let laser = this.sound.add("laser");
+    let explo = this.sound.add("explo");
+    let powerUp = this.sound.add("powerUp");
+    let dammage = this.sound.add("dammage");
     
     // Set image/sprite properties
     ship.body.collideWorldBounds = true;
@@ -172,6 +189,7 @@ function create() {
     });
     // Fires bullet from player on left click of mouse
     this.input.on('pointerdown', function (pointer, time, lastFired) {
+        laser.play();
         if (ship.active === false)
             return;
 
