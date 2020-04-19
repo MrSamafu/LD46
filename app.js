@@ -21,6 +21,7 @@ const config = {
             shipBullets: null,
             enemyBullets: null,
             time: 0,
+            createStarfield: createStarfield
         }
     }
 
@@ -107,6 +108,11 @@ function preload() {
     this.load.image("fuel","assets/sprites/PowerUp/fuel.png");
     this.load.image("life","assets/sprites/PowerUp/Life.png");
     this.load.image("powerup","assets/sprites/PowerUp/powerup.png");
+    this.load.image("starLight1", "assets/sprites/Decor/starsLight1.png");
+    this.load.image("starLight2", "assets/sprites/Decor/starsLight2.png");
+    this.load.image("starLight3", "assets/sprites/Decor/starsLight3.png");
+    this.load.image("starLight4", "assets/sprites/Decor/starsLight4.png");
+    this.load.image("asteroide", "assets/sprites/Decor/asteroide.png");
 
     //sound load
     this.load.audio("laser", "assets/sounds/laser.wav");
@@ -120,7 +126,10 @@ function create() {
     console.log(this);
 
     // Set world bounds
-    this.physics.world.setBounds(0, 0, config.width, config.height);
+    this.physics.world.setBounds(0, 0, 4000, 4000);
+    this.cameras.main.setBounds(0,0,4000,4000).setName("main");
+    this.createStarfield();
+    
 
     // Add 2 groups for Bullet objects
     shipBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
@@ -151,6 +160,10 @@ function create() {
     ship.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true).setDrag(500, 500);
     target.setOrigin(0.5, 0.5).setDisplaySize(18, 18).setCollideWorldBounds(true);
     enemy.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true);
+
+    //Set camera
+    this.cameras.main.startFollow(ship, true, 0.08, 0.08);
+    this.cameras.main.setZoom(1.2);
 
     // Set sprite variables
     ship.health = 300;
@@ -273,7 +286,33 @@ function collect(ship, item){
     item.disableBody(true, true);
 
 }
+// Map of stars
+function createStarfield ()
+{
+    //  Starfield background
 
+    //  Note the scrollFactor values which give them their 'parallax' effect
+
+    var group = this.add.group({ key: 'starLight1', frameQuantity:50 });
+
+    group.createMultiple({ key: 'starLight2', frameQuantity: 50 });
+    group.createMultiple({ key: 'starLight3', frameQuantity: 50 });
+    group.createMultiple({ key: 'starLight4', frameQuantity: 50 });
+    
+
+    var rect = new Phaser.Geom.Rectangle(0, 0, 4000, 4000);
+
+    Phaser.Actions.RandomRectangle(group.getChildren(), rect);
+
+    group.children.iterate(function (child, index) {
+        var sf = Math.max(0.3, Math.random());
+        if (child.texture.key === 'bigStar')
+        {
+            sf = 0.2;
+        }
+        child.setScrollFactor(sf);
+    }, this);
+}
 function enemyHitCallback(enemyHit, bulletHit)
 {
     // Reduce health of enemy
