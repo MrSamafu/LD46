@@ -103,6 +103,10 @@ function preload() {
     this.load.image("target", "assets/sprites/Ui/target.png");
     this.load.image("background", "assets/sprites/Decor/");
     this.load.image("enemy1", "assets/sprites/Enemy/enemy/enemy14.png");
+    this.load.image("ammo","assets/sprites/PowerUp/Ammo.png");
+    this.load.image("fuel","assets/sprites/PowerUp/fuel.png");
+    this.load.image("life","assets/sprites/PowerUp/Life.png");
+    this.load.image("powerup","assets/sprites/PowerUp/powerup.png");
 
     //sound load
     this.load.audio("laser", "assets/sounds/laser.wav");
@@ -130,11 +134,16 @@ function create() {
     ship = this.physics.add.sprite(config.width/2, config.height/2, "ship");
     target = this.physics.add.sprite(100,150,"target").setScale(4);
     enemy = this.physics.add.sprite(100, 100, "enemy1");
+    ammoItem = this.physics.add.sprite(400,100, "ammo");
+    fuelItem = this.physics.add.sprite(400,200, "fuel");
+    lifeItem = this.physics.add.sprite(400,300,"life");
+    powerUpItem =this.physics.add.sprite(400, 400, "powerup");
+
     
     // Add sounds
     let laser = this.sound.add("laser");
     let explo = this.sound.add("explo");
-    let powerUp = this.sound.add("powerUp");
+    let itemSound = this.sound.add("powerUp");
     let dammage = this.sound.add("dammage");
     
     // Set image/sprite properties
@@ -145,7 +154,7 @@ function create() {
 
     // Set sprite variables
     ship.health = 300;
-    ship.fuel = 500;
+    ship.fuel = 15;
     ship.ammo = 150;
     enemy.health = 3;
     enemy.lastFired = 0;
@@ -182,6 +191,7 @@ function create() {
         ship.setAccelerationX(800);
         
     });
+    
 
     // Stops player acceleration on uppress of WASD keys
     this.input.keyboard.on('keyup_Z', function (event) {
@@ -204,12 +214,28 @@ function create() {
             ship.fuel -=1;
             ship.setAccelerationX(0);
     });
+    
     // Fires bullet from player on left click of mouse
     this.input.on('pointerdown', function (pointer, time, lastFired) {
-        laser.play();
-        ship.ammo -= 1;
-        if (ship.active === false)
-            return;
+        if(ship.ammo <= 0){
+            ship.active = false;
+        }
+        else{
+            ship.active = true;
+        }
+        if (ship.active === false){
+             return;
+        }
+        else{
+            while(pointer.isUp){
+                laser.play();
+            ship.ammo -= 1;
+            console.log(ship.active); 
+            }
+            
+        }
+        
+        
 
         // Get bullet from bullets group
         var bullet = shipBullets.get().setActive(true).setVisible(true);
@@ -242,6 +268,12 @@ function create() {
         }
     }, this);
 }
+//collect item
+function collect(ship, item){
+    item.disableBody(true, true);
+
+}
+
 function enemyHitCallback(enemyHit, bulletHit)
 {
     // Reduce health of enemy
