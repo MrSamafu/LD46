@@ -5,7 +5,7 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 0 },
+            //gravity: { y: 0 },
             debug: true
         }
     },
@@ -79,10 +79,11 @@ let Bullet = new Phaser.Class({
         this.x += this.xSpeed * delta;
         this.y += this.ySpeed * delta;
         this.born += delta;
-        if (this.born > 1800)
+        if (this.born > 1500)
         {
             this.setActive(false);
             this.setVisible(false);
+            this.destroy();
         }
     }
 
@@ -113,16 +114,16 @@ function create() {
     console.log(this);
 
     // Set world bounds
-    this.physics.world.setBounds(0, 0, 1600, 1200);
+    this.physics.world.setBounds(0, 0, config.width, config.height);
 
     // Add 2 groups for Bullet objects
     shipBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
     enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
     // Add background player, enemy, reticle, healthpoint sprites
-    ship = this.physics.add.sprite(100, 100, "ship");
+    ship = this.physics.add.sprite(config.width/2, config.height/2, "ship");
     target = this.physics.add.sprite(100,150,"target").setScale(4);
-    enemy = this.physics.add.sprite(300, 600, "enemy1");
+    enemy = this.physics.add.sprite(100, 100, "enemy1");
     
     // Add sounds
     let laser = this.sound.add("laser");
@@ -137,7 +138,7 @@ function create() {
     enemy.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true);
 
     // Set sprite variables
-    ship.health = 3;
+    ship.health = 300;
     enemy.health = 3;
     enemy.lastFired = 0;
 
@@ -193,7 +194,7 @@ function create() {
         if (ship.active === false)
             return;
 
-    // Get bullet from bullets group
+        // Get bullet from bullets group
         var bullet = shipBullets.get().setActive(true).setVisible(true);
 
         if (bullet)
@@ -240,6 +241,7 @@ function enemyHitCallback(enemyHit, bulletHit)
 
         // Destroy bullet
         bulletHit.setActive(false).setVisible(false);
+        bulletHit.destroy();
     }
 }
 function playerHitCallback(playerHit, bulletHit)
@@ -251,15 +253,7 @@ function playerHitCallback(playerHit, bulletHit)
         console.log("Player hp: ", playerHit.health);
 
         // Kill hp sprites and kill player if health <= 0
-        if (playerHit.health == 2)
-        {
-            //Make here stateOfLife or lifeBar
-        }
-        else if (playerHit.health == 1)
-        {
-            //Make here stateOfLife or lifeBar
-        }
-        else
+        if (playerHit.health <= 0)
         {
             //Make here stateOfLife or lifeBar
             playerHit.setActive(false).setVisible(false);
@@ -268,6 +262,7 @@ function playerHitCallback(playerHit, bulletHit)
 
         // Destroy bullet
         bulletHit.setActive(false).setVisible(false);
+        bulletHit.destroy();
     }
 }
 function enemyFire(enemy, player, time, gameObject)
@@ -319,15 +314,15 @@ function constrainReticle(reticle)
     var distY = target.y-ship.y; // Y distance between player & reticle
 
     // Ensures reticle cannot be moved offscreen (player follow)
-    if (distX > 1280)
-        target.x = ship.x+1280;
-    else if (distX < -1280)
-        target.x = ship.x-1280;
+    if (distX > config.width)
+        target.x = ship.x+config.width;
+    else if (distX < -config.width)
+        target.x = ship.x-config.width;
 
-    if (distY > 720)
-        target.y = ship.y+720;
-    else if (distY < -720)
-        target.y = ship.y-720;
+    if (distY > config.height)
+        target.y = ship.y+config.height;
+    else if (distY < -config.height)
+        target.y = ship.y-config.height;
 }
 // Enable enemy movement
 function enemyMove(enemy, ship, gameObject){
