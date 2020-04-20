@@ -116,7 +116,7 @@ class SceneGame extends Phaser.Scene{
             'right': Phaser.Input.Keyboard.KeyCodes.D
         });
         // Rotates player to face towards reticle
-        ship.rotation = Phaser.Math.Angle.Between(ship.x, ship.y, target.x, target.y);
+        ship.rotation = Phaser.Math.Angle.Between(ship.x, ship.y, target.x, target.y)+Phaser.Math.DegToRad(90);
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_Z', function (event) {
             ship.fuel -=1;
