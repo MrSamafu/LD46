@@ -15,7 +15,11 @@ class SceneGame extends Phaser.Scene{
         this.ship.play("thrust");
         this.target = this.physics.add.sprite(gameSettings.worldWidth/2, gameSettings.worldHeight/2+100,"target").setScale(4);
         this.powerUp = this.physics.add.group();
-        this.bullet = this.physics.add.sprite(0,0,"bullet")
+        this.bullet = this.physics.add.sprite(0,0,"bullet");
+        this.lifeBarIn = this.physics.add.image(gameSettings.worldWidth/2,gameSettings.worldWidth/2 - 100,"lifeBarIn");
+        this.lifeBarOut = this.physics.add.image(gameSettings.worldWidth/2,gameSettings.worldWidth/2 -100,"lifeBarOut");
+        
+        
 
         this.projectiles = this.add.group();
 
@@ -27,15 +31,15 @@ class SceneGame extends Phaser.Scene{
         this.ship.body.collideWorldBounds = true;
         this.ship.setOrigin(0.5, 0.5).setDisplaySize(gameSettings.playerShipSize, gameSettings.playerShipSize).setCollideWorldBounds(true).setDrag(500, 500);
         this.target.setOrigin(0.5, 0.5).setDisplaySize(18, 18).setCollideWorldBounds(true);
-        //this.enemy.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true);
+        this.lifeBarIn.setOrigin(0, 0);
+        this.lifeBarOut.setOrigin(0, 0);
 
+        //this.enemy.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true);
+        
         //Set camera
         this.cameras.main.startFollow(this.ship, true, 0.08, 0.08);
         this.cameras.main.setZoom(1.2);
         // Set sprite variables
-        this.ship.health = 300;
-        this.ship.fuel = 15;
-        this.ship.ammo = 150;
         this.enemy.health = 3;
         this.enemy.lastFired = 0;
         //Physics and collider
@@ -74,13 +78,13 @@ class SceneGame extends Phaser.Scene{
         this.target.body.velocity.x = this.ship.body.velocity.x;
         this.target.body.velocity.y = this.ship.body.velocity.y;
         this.movePlayerManager(this.ship,this.target);
+        this.lifeBar(this.lifeBarIn,this.lifeBarOut);
 
         //call bullet update
         for (var i = 0; i < this.projectiles.getChildren().length; i++) {
             var bullet = this.projectiles.getChildren()[i];
             bullet.update();
           }
-        
         
     }
     //Create the animated background
@@ -134,40 +138,40 @@ class SceneGame extends Phaser.Scene{
         ship.rotation = Phaser.Math.Angle.Between(ship.x, ship.y, target.x, target.y)+Phaser.Math.DegToRad(90);
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_Z', function (event) {
-            ship.fuel -=1;
+            gameSettings.energy -=1;
             ship.setAccelerationY(-gameSettings.playerSpeed);   
         });
         this.input.keyboard.on('keydown_S', function (event) {
-            ship.fuel -=1;
+            gameSettings.energy -=1;
             ship.setAccelerationY(gameSettings.playerSpeed);  
         });
         this.input.keyboard.on('keydown_Q', function (event) {
-            ship.fuel -=1;
+            gameSettings.energy -=1;
             ship.setAccelerationX(-gameSettings.playerSpeed);   
         });
         this.input.keyboard.on('keydown_D', function (event) {
-            ship.fuel -=1;
+            gameSettings.energy -=1;
             ship.setAccelerationX(gameSettings.playerSpeed);   
         });
         // Stops player acceleration on uppress of WASD keys
         this.input.keyboard.on('keyup_Z', function (event) {
             if (moveKeys['down'].isUp)
-                ship.fuel -=1;
+                gameSettings.energy -=1;
                 ship.setAccelerationY(0);
         });
         this.input.keyboard.on('keyup_S', function (event) {
             if (moveKeys['up'].isUp)
-                ship.fuel -=1;
+                gameSettings.energy -=1;
                 ship.setAccelerationY(0);
         });
         this.input.keyboard.on('keyup_Q', function (event) {
             if (moveKeys['right'].isUp)
-                ship.fuel -=1;
+                gameSettings.energy -=1;
                 ship.setAccelerationX(0);
         });
         this.input.keyboard.on('keyup_D', function (event) {
             if (moveKeys['left'].isUp)
-                ship.fuel -=1;
+                gameSettings.energy -=1;
                 ship.setAccelerationX(0);
         });
         this.constrainVelocity(ship, gameSettings.maxVelocity);
@@ -223,5 +227,18 @@ class SceneGame extends Phaser.Scene{
     fireBullet(target){
         let fire = new Bullet(this);
         this.bulletSound.play();
+    }
+    lifeBar(lifeBarIn, lifeBarOut){
+        if(gameSettings.energy > gameSettings.maxEnergy){
+            gameSettings.energy = gameSettings.maxEnergy;
+        }
+        else if(gameSettings.energy <= 0){
+            this.gameOver()
+        }
+        else {
+            lifeBarIn.setDisplaySize(gameSettings.energy,50);
+        }
+        
+        lifeBarOut.setDisplaySize(gameSettings.maxEnergy,50);
     }
 }

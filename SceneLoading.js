@@ -19,6 +19,8 @@ class SceneLoading extends Phaser.Scene{
         this.load.image("starLight4", "assets/sprites/Decor/starsLight4.png");
         this.load.image("enemy1", "assets/sprites/Enemy/enemy/enemy14.png");
         this.load.image("asteroid", "assets/sprites/Decor/asteroide.png");
+        this.load.image("lifeBarIn", "assets/sprites/Ui/lifeBarIn.png");
+        this.load.image("lifeBarOut", "assets/sprites/Ui/lifeBarOut.png");
 
         this.load.spritesheet("player", "assets/sprites/Character/player.png",{
             frameWidth: 24,
