@@ -18,9 +18,9 @@ class SceneTitle extends Phaser.Scene{
         setting.setOrigin(0.5,0.5).setDisplaySize(300,100);
         setting.setPosition(config.width*0.5,config.height*0.5 + 150);
 
-        let about = this.add.text(20,20,"About !").setInteractive();
-        about.setOrigin(1,1).setDisplaySize(60,20);
-        about.setPosition(config.width -20,config.height -20);
+        let about = this.add.text(20,20,"About R2D48 & MrSamafu !").setInteractive();
+        about.setOrigin(1,1).setDisplaySize(250,20);
+        about.setPosition(config.width -25,config.height -20);
 
         this.createStarfield();
         this.tintSelection(play);
