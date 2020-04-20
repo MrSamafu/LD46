@@ -4,6 +4,8 @@ class SceneTitle extends Phaser.Scene{
     }
 
     create(){
+        game.input.mouse.releasePointerLock();
+
         let title = this.add.text(20, 20,"Keep Space Alive", {font: "25px Arial", fill: "red"});
         title.setOrigin(0.5,0.5).setDisplaySize(500,100);
         title.setPosition(config.width*0.5,config.height*0.5 - 150);
@@ -12,17 +14,24 @@ class SceneTitle extends Phaser.Scene{
         play.setOrigin(0.5,0.5).setDisplaySize(200,100);
         play.setPosition(config.width*0.5,config.height*0.5);
 
-        let setting = this.add.text(20,20,"Settings")
+        let setting = this.add.text(20,20,"Settings").setInteractive();
         setting.setOrigin(0.5,0.5).setDisplaySize(300,100);
         setting.setPosition(config.width*0.5,config.height*0.5 + 150);
 
-        let about = this.add.text(20,20,"About !")
+        let about = this.add.text(20,20,"About !").setInteractive();
         about.setOrigin(1,1).setDisplaySize(60,20);
         about.setPosition(config.width -20,config.height -20);
 
         this.createStarfield();
+        this.tintSelection(play);
+        this.tintSelection(setting);
+        this.tintSelection(about);
         
         play.once("pointerdown", function(){
+            this.scene.start("playGame");
+        },this);
+
+        setting.once("pointerdown", function(){
             this.scene.start("playGame");
         },this);
     }
@@ -51,5 +60,18 @@ class SceneTitle extends Phaser.Scene{
             }
             child.setScrollFactor(sf);
         }, this);
-    }   
+    }  
+    tintSelection(elements){
+        elements.on('pointerover', function () {
+
+            elements.setTint(0x7878ff);
+    
+        });
+    
+        elements.on('pointerout', function () {
+    
+            elements.clearTint();
+    
+        });
+    } 
 }
