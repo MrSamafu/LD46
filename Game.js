@@ -4,8 +4,8 @@ var gameSettings = {
     playerShipSize:24,
     worldWidth:4000,
     worldHeight:4000,
-    maxEnergy: 250,
-    energy: 250,
+    maxEnergy: 2000,
+    energy: 2000,
 }
 const config = {
     width : 1280,

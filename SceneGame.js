@@ -101,7 +101,7 @@ class SceneGame extends Phaser.Scene{
         this.target.body.velocity.x = this.ship.body.velocity.x;
         this.target.body.velocity.y = this.ship.body.velocity.y;
         this.movePlayerManager(this.ship,this.target);
-        this.lifeBar(this.lifeBarIn,this.lifeBarOut);
+        this.lifeBar(this.lifeBarIn,this.lifeBarOut,this.ship);
 
         //call bullet update
         for (var i = 0; i < this.projectiles.getChildren().length; i++) {
@@ -273,7 +273,10 @@ class SceneGame extends Phaser.Scene{
         let fire = new Bullet(this);
         this.bulletSound.play();
     }
-    lifeBar(lifeBarIn, lifeBarOut){
+    lifeBar(lifeBarIn, lifeBarOut, ship){
+
+        lifeBarOut.setPosition(ship.x-50,ship.y - 40)
+        lifeBarIn.setPosition(ship.x-50,ship.y - 40)
         if(gameSettings.energy > gameSettings.maxEnergy){
             gameSettings.energy = gameSettings.maxEnergy;
         }
@@ -281,9 +284,9 @@ class SceneGame extends Phaser.Scene{
             this.gameOver()
         }
         else {
-            lifeBarIn.setDisplaySize(gameSettings.energy,50);
+            lifeBarIn.setDisplaySize((gameSettings.energy*100)/gameSettings.maxEnergy,10);
         }
         
-        lifeBarOut.setDisplaySize(gameSettings.maxEnergy,50);
+        lifeBarOut.setDisplaySize(100,10);
     }
 }

@@ -21,10 +21,12 @@ class SceneGameOver extends Phaser.Scene{
 
         retry.once("pointerdown", function(){
             this.scene.start("playGame");
+            gameSettings.energy = gameSettings.maxEnergy;
         },this);
 
         menu.once("pointerdown", function(){
             this.scene.start("Menu");
+            gameSettings.energy = gameSettings.maxEnergy;
         },this);
     }
     tintSelection(elements){
