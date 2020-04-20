@@ -120,19 +120,19 @@ class SceneGame extends Phaser.Scene{
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_Z', function (event) {
             ship.fuel -=1;
-            ship.setAccelerationY(-800);   
+            ship.setAccelerationY(-gameSettings.playerSpeed);   
         });
         this.input.keyboard.on('keydown_S', function (event) {
             ship.fuel -=1;
-            ship.setAccelerationY(800);  
+            ship.setAccelerationY(gameSettings.playerSpeed);  
         });
         this.input.keyboard.on('keydown_Q', function (event) {
             ship.fuel -=1;
-            ship.setAccelerationX(-800);   
+            ship.setAccelerationX(-gameSettings.playerSpeed);   
         });
         this.input.keyboard.on('keydown_D', function (event) {
             ship.fuel -=1;
-            ship.setAccelerationX(800);   
+            ship.setAccelerationX(gameSettings.playerSpeed);   
         });
         // Stops player acceleration on uppress of WASD keys
         this.input.keyboard.on('keyup_Z', function (event) {
