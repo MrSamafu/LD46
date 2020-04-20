@@ -17,6 +17,8 @@ class SceneGame extends Phaser.Scene{
         this.powerUp = this.physics.add.group();
         this.bullet = this.physics.add.sprite(0,0,"bullet")
 
+        this.projectiles = this.add.group();
+
         //Background
         this.createStarfield();
         this.asteroidField(this.asteroids,40);
@@ -72,6 +74,12 @@ class SceneGame extends Phaser.Scene{
         this.target.body.velocity.x = this.ship.body.velocity.x;
         this.target.body.velocity.y = this.ship.body.velocity.y;
         this.movePlayerManager(this.ship,this.target);
+
+        //call bullet update
+        for (var i = 0; i < this.projectiles.getChildren().length; i++) {
+            var bullet = this.projectiles.getChildren()[i];
+            bullet.update();
+          }
         
         
     }
@@ -210,7 +218,7 @@ class SceneGame extends Phaser.Scene{
         
     }
     fireBullet(target){
-        let fire = new Bullet(this).fire(target);
+        let fire = new Bullet(this);
         this.bulletSound.play();
     }
 }
