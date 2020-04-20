@@ -9,7 +9,7 @@ const config = {
     width : 1280,
     height: 720,
     type: Phaser.AUTO,
-    scene: [SceneLoading,SceneTitle,SceneGame],
+    scene: [SceneLoading,SceneTitle,SceneGame,SceneGameOver],
     physics: {
         default: 'arcade',
         arcade: {
