@@ -21,11 +21,11 @@ class SceneLoading extends Phaser.Scene{
         this.load.image("asteroid", "assets/sprites/Decor/asteroide.png");
 
         //sound load
-        this.load.audio("laser", "assets/sounds/laser.wav");
-        this.load.audio("explo","assets/sounds/explo.wav");
-        this.load.audio("powerUp","assets/sounds/powerUp.wav");
-        this.load.audio("dammage","assets/sounds/dammage.wav");
-        this.load.audio("musicTheme","assets/musics/KeepSpaceAlive3.mp3");
+        this.load.audio("sndLaser", "assets/sounds/laser.mp3");
+        this.load.audio("sndExplo","assets/sounds/explo.mp3");
+        this.load.audio("sndPowerUp","assets/sounds/powerUp.mp3");
+        this.load.audio("sndHit","assets/sounds/hit.mp3");
+        this.load.audio("sndMusic","assets/musics/KeepSpaceAlive.mp3");
         
     }
     create(){
