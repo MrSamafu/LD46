@@ -63,10 +63,10 @@ class SceneGame extends Phaser.Scene{
                 
     }
     update(){
-        this.movePlayerManager(this.ship);
         //Make reticle move with player
         this.target.body.velocity.x = this.ship.body.velocity.x;
         this.target.body.velocity.y = this.ship.body.velocity.y;
+        this.movePlayerManager(this.ship,this.target);
     }
     //Create the animated background
     createStarfield ()
@@ -107,7 +107,7 @@ class SceneGame extends Phaser.Scene{
         }
     }
     //PlayerMovement an input control
-    movePlayerManager(ship){
+    movePlayerManager(ship,target){
         // Creates object for input with WASD kets
         let moveKeys = this.input.keyboard.addKeys({
             'up': Phaser.Input.Keyboard.KeyCodes.Z,
@@ -115,6 +115,8 @@ class SceneGame extends Phaser.Scene{
             'left': Phaser.Input.Keyboard.KeyCodes.Q,
             'right': Phaser.Input.Keyboard.KeyCodes.D
         });
+        // Rotates player to face towards reticle
+        ship.rotation = Phaser.Math.Angle.Between(ship.x, ship.y, target.x, target.y);
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_Z', function (event) {
             ship.fuel -=1;
