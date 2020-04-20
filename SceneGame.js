@@ -41,9 +41,14 @@ class SceneGame extends Phaser.Scene{
         //Physics and collider
         this.physics.add.collider(this.asteroids,this.asteroids);
         this.physics.add.overlap(this.ship,this.asteroids,this.gameOver,null,this);
+        
+        this.physics.add.overlap(this.projectiles, this.asteroids, this.hitAsteroids, null, this);
+
+
         //the target
         this.pointerTarget(this.target, this.ship);
         
+
 
         //Sounds
         this.bulletSound = this.sound.add("sndLaser");
@@ -83,6 +88,15 @@ class SceneGame extends Phaser.Scene{
         
         
     }
+
+    hitAsteroids(projectile, asteroid) {
+        var explosion = new Explosion(this, asteroid.x, asteroid.y);
+    
+        projectile.destroy();
+        asteroid.destroy();
+        this.exploSound.play();
+    }
+
     //Create the animated background
     createStarfield ()
     {
