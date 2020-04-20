@@ -33,6 +33,8 @@ class SceneLoading extends Phaser.Scene{
             frameHeight: 16
           });
 
+        this.load.bitmapFont("pixelFont", "assets/font/font.png", "assets/font/font.xml");
+
         //sound load
         this.load.audio("sndLaser", "assets/sounds/laser.mp3");
         this.load.audio("sndExplo","assets/sounds/explo.mp3");
