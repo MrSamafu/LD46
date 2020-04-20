@@ -38,11 +38,15 @@ class SceneGame extends Phaser.Scene{
 
         //Physics and collider
         this.physics.add.collider(this.asteroids,this.asteroids);
-        
+        //the target
+        this.pointerTarget(this.target, this.ship);
         
     }
     update(){
         this.movePlayerManager(this.ship);
+        //Make reticle move with player
+        this.target.body.velocity.x = this.ship.body.velocity.x;
+        this.target.body.velocity.y = this.ship.body.velocity.y;
     }
     //Create the animated background
     createStarfield ()
@@ -82,7 +86,7 @@ class SceneGame extends Phaser.Scene{
             asteroids.setBounce(1);
         }
     }
-    //PlayerMovement
+    //PlayerMovement an input control
     movePlayerManager(ship){
         // Creates object for input with WASD kets
         let moveKeys = this.input.keyboard.addKeys({
@@ -150,5 +154,26 @@ class SceneGame extends Phaser.Scene{
             sprite.body.velocity.x = vx;
             sprite.body.velocity.y = vy;
         }
+    }
+    pointerTarget(target){
+        // Pointer lock will only work after mousedown
+        game.canvas.addEventListener('mousedown', function () {
+            game.input.mouse.requestPointerLock();
+        });
+
+        // Exit pointer lock when A or escape (by default) is pressed.
+        this.input.keyboard.on('keydown_A', function (event) {
+            if (game.input.mouse.locked)
+                game.input.mouse.releasePointerLock();
+        }, 0, this);
+
+        // Move reticle upon locked pointer move
+        this.input.on('pointermove', function (pointer) {
+            if (this.input.mouse.locked)
+            {
+                target.x += pointer.movementX;
+                target.y += pointer.movementY;
+            }
+        }, this);
     }
 }
