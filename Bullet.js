@@ -4,11 +4,11 @@ class Bullet extends Phaser.GameObjects.Sprite{
         var y = scene.ship.y;
     
         super(scene, x, y, "bullet");
-        this.speed=250;
+        this.speed=900;
     
         scene.add.existing(this);
     
-        //this.play("beam_anim");
+        this.play("bullet_anim");
         scene.physics.world.enableBody(this);
 
         this.direction = Math.atan( (scene.target.x-this.x) / (scene.target.y-this.y));
@@ -23,6 +23,8 @@ class Bullet extends Phaser.GameObjects.Sprite{
             this.body.velocity.x = -this.speed*Math.sin(this.direction);
             this.body.velocity.y = -this.speed*Math.cos(this.direction);
         }
+
+        this.rotation = Phaser.Math.Angle.Between(this.x, this.y, scene.target.x, scene.target.y)+Phaser.Math.DegToRad(90);
 
         scene.projectiles.add(this);
       }
