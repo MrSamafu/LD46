@@ -16,6 +16,7 @@ class SceneGame extends Phaser.Scene{
         this.target = this.physics.add.sprite(gameSettings.worldWidth/2, gameSettings.worldHeight/2+100,"target").setScale(4);
         this.powerUp = this.physics.add.group();
         this.bullet = this.physics.add.sprite(0,0,"bullet");
+        this.textEnergy = this.add.text(0,0,"Energy");
         this.lifeBarIn = this.physics.add.image(gameSettings.worldWidth/2,gameSettings.worldWidth/2 - 100,"lifeBarIn");
         this.lifeBarOut = this.physics.add.image(gameSettings.worldWidth/2,gameSettings.worldWidth/2 -100,"lifeBarOut");
         
@@ -101,7 +102,7 @@ class SceneGame extends Phaser.Scene{
         this.target.body.velocity.x = this.ship.body.velocity.x;
         this.target.body.velocity.y = this.ship.body.velocity.y;
         this.movePlayerManager(this.ship,this.target);
-        this.lifeBar(this.lifeBarIn,this.lifeBarOut,this.ship);
+        this.lifeBar(this.lifeBarIn,this.lifeBarOut,this.ship, this.textEnergy);
 
         //call bullet update
         for (var i = 0; i < this.projectiles.getChildren().length; i++) {
@@ -273,10 +274,10 @@ class SceneGame extends Phaser.Scene{
         let fire = new Bullet(this);
         this.bulletSound.play();
     }
-    lifeBar(lifeBarIn, lifeBarOut, ship){
-
-        lifeBarOut.setPosition(ship.x-50,ship.y - 40)
-        lifeBarIn.setPosition(ship.x-50,ship.y - 40)
+    lifeBar(lifeBarIn, lifeBarOut, ship, text){
+        text.setPosition(ship.x-50,ship.y - 57);
+        lifeBarOut.setPosition(ship.x-50,ship.y - 40);
+        lifeBarIn.setPosition(ship.x-50,ship.y - 40);
         if(gameSettings.energy > gameSettings.maxEnergy){
             gameSettings.energy = gameSettings.maxEnergy;
         }
