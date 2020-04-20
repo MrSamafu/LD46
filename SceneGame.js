@@ -45,9 +45,32 @@ class SceneGame extends Phaser.Scene{
         //Physics and collider
         this.physics.add.collider(this.asteroids,this.asteroids);
         this.physics.add.overlap(this.ship,this.asteroids,this.gameOver,null,this);
+        
+        this.physics.add.overlap(this.projectiles, this.asteroids, this.hitAsteroids, null, this);
+
+
         //the target
         this.pointerTarget(this.target, this.ship);
+
+        //Hud Score
+        var graphics = this.add.graphics();
+        graphics.fillStyle(0x000000, 1);
+        graphics.beginPath();
+        graphics.moveTo(0, 0);
+        graphics.lineTo(config.width, 0);
+        graphics.lineTo(config.width, 20);
+        graphics.lineTo(0, 20);
+        graphics.lineTo(0, 0);
+        //
+        graphics.closePath();
+        graphics.fillPath();
+
+        this.score = 0;
+        var scoreFormated = this.zeroPad(this.score, 6);
+        this.scoreLabel = this.add.bitmapText(10, 5, "pixelFont", "SCORE " + scoreFormated  , 16);
+
         
+
 
         //Sounds
         this.bulletSound = this.sound.add("sndLaser");
@@ -87,6 +110,28 @@ class SceneGame extends Phaser.Scene{
           }
         
     }
+
+    zeroPad(number, size){
+        var stringNumber = String(number);
+        while(stringNumber.length < (size || 2)){
+          stringNumber = "0" + stringNumber;
+        }
+        return stringNumber;
+    }
+
+    hitAsteroids(projectile, asteroid) {
+        var explosion = new Explosion(this, asteroid.x, asteroid.y);
+
+        this.score += 10;
+        var scoreFormated = this.zeroPad(this.score, 6);
+        this.scoreLabel.text = "SCORE " + scoreFormated;
+
+    
+        projectile.destroy();
+        asteroid.destroy();
+        this.exploSound.play();
+    }
+
     //Create the animated background
     createStarfield ()
     {
