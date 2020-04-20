@@ -11,7 +11,8 @@ class SceneGame extends Phaser.Scene{
         //load image and sprite
         this.enemy = this.add.sprite(100,100,"enemy1");
         this.asteroids = this.physics.add.group();
-        this.ship = this.physics.add.sprite(2000, 2000, "ship");
+        this.ship = this.physics.add.sprite(2000, 2000, "player");
+        this.ship.play("thrust");
         this.target = this.physics.add.sprite(2000,2100,"target").setScale(4);
         this.powerUp = this.physics.add.group();
 
