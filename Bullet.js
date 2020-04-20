@@ -1,14 +1,14 @@
 class Bullet extends Phaser.GameObjects.Sprite{
   constructor(scene){
 
-    var x = scene.player.x;
-    var y = scene.player.y - 16;
+    var x = scene.ship.x;
+    var y = scene.ship.y - 16;
 
     super(scene, x, y, "bullet");
 
     scene.add.existing(this);
 
-    this.play("bullet_anim");
+    //this.play("beam_anim");
     scene.physics.world.enableBody(this);
     this.body.velocity.y = - 250;
 

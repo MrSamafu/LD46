@@ -22,7 +22,7 @@ class Intro extends Phaser.Scene {
     this.load.image("asteroid", "assets/sprites/Decor/asteroide.png");
   
       // 1.1 load sounds in both formats mp3 and ogg
-      this.load.audio("laser", ["assets/snd/bullet.mp3"]);
+      this.load.audio("audio_bullet", ["assets/snd/bullet.mp3"]);
       this.load.audio("audio_explosion", ["assets/snd/explo.mp3"]);
       this.load.audio("audio_pickup", ["assets/snd/powerUp.mp3"]);
       this.load.audio("music", ["assets/snd/keepSpaceAlive.mp3"]);

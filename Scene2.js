@@ -44,6 +44,31 @@ class Scene2 extends Phaser.Scene{
             this.target.y += pointer.movementY;
         }
     }, this);
+
+    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+    this.projectiles = this.add.group();
+
+
+    // creation des sons
+    this.beamSound = this.sound.add("audio_bullet");
+    this.explosionSound = this.sound.add("audio_explosion");
+    this.pickupSound = this.sound.add("audio_pickup");
+
+    // Gestion musique
+    this.music = this.sound.add("music");
+
+    var musicConfig = {
+      mute: false,
+      volume: 1,
+      rate: 1,
+      detune: 0,
+      seek: 0,
+      loop: true,
+      delay: 0
+    }
+
+    this.music.play(musicConfig);
   }
 
   // Ensures sprite speed doesnt exceed maxVelocity while update is called
@@ -142,6 +167,22 @@ class Scene2 extends Phaser.Scene{
 
     // Constrain position of constrainReticle
     this.constrainReticle(this.target);
+
+    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) { 
+          this.shootBullet();
+    }
+    for (var i = 0; i < this.projectiles.getChildren().length; i++) {
+      var bullet = this.projectiles.getChildren()[i];
+      bullet.update();
+    }
+
+
+  }
+
+  shootBullet() {
+    var bullet = new Bullet(this);
+    // 1.3 play sounds
+    this.beamSound.play();
   }
     
 }
