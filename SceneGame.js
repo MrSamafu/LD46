@@ -11,8 +11,8 @@ class SceneGame extends Phaser.Scene{
         //load image and sprite
         this.enemy = this.add.sprite(100,100,"enemy1");
         this.asteroids = this.physics.add.group();
-        this.ship = this.physics.add.sprite(config.width/2, config.height/2, "ship");
-        this.target = this.physics.add.sprite(100,150,"target").setScale(4);
+        this.ship = this.physics.add.sprite(2000, 2000, "ship");
+        this.target = this.physics.add.sprite(2000,2100,"target").setScale(4);
         this.powerUp = this.physics.add.group();
 
         //Background
@@ -28,16 +28,15 @@ class SceneGame extends Phaser.Scene{
         //Set camera
         this.cameras.main.startFollow(this.ship, true, 0.08, 0.08);
         this.cameras.main.setZoom(1.2);
-
         // Set sprite variables
         this.ship.health = 300;
         this.ship.fuel = 15;
         this.ship.ammo = 150;
         this.enemy.health = 3;
         this.enemy.lastFired = 0;
-
         //Physics and collider
         this.physics.add.collider(this.asteroids,this.asteroids);
+        this.physics.add.overlap(this.ship,this.asteroids,this.gameOver,null,this);
         //the target
         this.pointerTarget(this.target, this.ship);
         
@@ -197,5 +196,9 @@ class SceneGame extends Phaser.Scene{
                 target.y += pointer.movementY;
             }
         }, this);
+    }
+    gameOver(ship,item){
+        
+        this.scene.start("gameOver");
     }
 }
