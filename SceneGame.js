@@ -3,21 +3,26 @@ class SceneGame extends Phaser.Scene{
         super("playGame");
     }
     create(){
+
         //World and camera config
         this.physics.world.setBounds(0, 0, 4000, 4000);
         this.cameras.main.setBounds(0,0,4000,4000).setName("main");
+
         //load image and sprite
         this.enemy = this.add.sprite(100,100,"enemy1");
         this.asteroids = this.physics.add.group();
-        //background
+
+        //Background
         this.createStarfield();
         this.asteroidField(this.asteroids,40);
 
+        //Physics and collider
         this.physics.add.collider(this.asteroids,this.asteroids);
         
         
     }
-    //create the animated background
+
+    //Create the animated background
     createStarfield ()
     {
         //  Starfield background
@@ -44,6 +49,7 @@ class SceneGame extends Phaser.Scene{
             child.setScrollFactor(sf);
         }, this);
     }
+    //Create asteroids field
     asteroidField(asteroid,maxObject){
         for(let i = 0; i <= maxObject; i++){
             let asteroids =  this.physics.add.sprite(150, 150, "asteroid");
@@ -53,9 +59,5 @@ class SceneGame extends Phaser.Scene{
             asteroids.setCollideWorldBounds(true);
             asteroids.setBounce(1);
         }
-        
-        
-
-
     }
 }
