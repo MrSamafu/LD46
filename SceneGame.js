@@ -11,17 +11,39 @@ class SceneGame extends Phaser.Scene{
         //load image and sprite
         this.enemy = this.add.sprite(100,100,"enemy1");
         this.asteroids = this.physics.add.group();
+        this.ship = this.physics.add.sprite(config.width/2, config.height/2, "ship");
+        this.target = this.physics.add.sprite(100,150,"target").setScale(4);
+        this.powerUp = this.physics.add.group();
 
         //Background
         this.createStarfield();
         this.asteroidField(this.asteroids,40);
+
+        // Set image/sprite properties
+        this.ship.body.collideWorldBounds = true;
+        this.ship.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true).setDrag(500, 500);
+        this.target.setOrigin(0.5, 0.5).setDisplaySize(18, 18).setCollideWorldBounds(true);
+        //this.enemy.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true);
+
+        //Set camera
+        this.cameras.main.startFollow(this.ship, true, 0.08, 0.08);
+        this.cameras.main.setZoom(1.2);
+
+        // Set sprite variables
+        this.ship.health = 300;
+        this.ship.fuel = 15;
+        this.ship.ammo = 150;
+        this.enemy.health = 3;
+        this.enemy.lastFired = 0;
 
         //Physics and collider
         this.physics.add.collider(this.asteroids,this.asteroids);
         
         
     }
-
+    update(){
+        this.movePlayerManager(this.ship);
+    }
     //Create the animated background
     createStarfield ()
     {
@@ -49,7 +71,6 @@ class SceneGame extends Phaser.Scene{
             child.setScrollFactor(sf);
         }, this);
     }
-    
     //Create asteroids field
     asteroidField(asteroid,maxObject){
         for(let i = 0; i <= maxObject; i++){
@@ -59,6 +80,75 @@ class SceneGame extends Phaser.Scene{
             asteroids.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100));
             asteroids.setCollideWorldBounds(true);
             asteroids.setBounce(1);
+        }
+    }
+    //PlayerMovement
+    movePlayerManager(ship){
+        // Creates object for input with WASD kets
+        let moveKeys = this.input.keyboard.addKeys({
+            'up': Phaser.Input.Keyboard.KeyCodes.Z,
+            'down': Phaser.Input.Keyboard.KeyCodes.S,
+            'left': Phaser.Input.Keyboard.KeyCodes.Q,
+            'right': Phaser.Input.Keyboard.KeyCodes.D
+        });
+        // Enables movement of player with WASD keys
+        this.input.keyboard.on('keydown_Z', function (event) {
+            ship.fuel -=1;
+            ship.setAccelerationY(-800);   
+        });
+        this.input.keyboard.on('keydown_S', function (event) {
+            ship.fuel -=1;
+            ship.setAccelerationY(800);  
+        });
+        this.input.keyboard.on('keydown_Q', function (event) {
+            ship.fuel -=1;
+            ship.setAccelerationX(-800);   
+        });
+        this.input.keyboard.on('keydown_D', function (event) {
+            ship.fuel -=1;
+            ship.setAccelerationX(800);   
+        });
+        // Stops player acceleration on uppress of WASD keys
+        this.input.keyboard.on('keyup_Z', function (event) {
+            if (moveKeys['down'].isUp)
+                ship.fuel -=1;
+                ship.setAccelerationY(0);
+        });
+        this.input.keyboard.on('keyup_S', function (event) {
+            if (moveKeys['up'].isUp)
+                ship.fuel -=1;
+                ship.setAccelerationY(0);
+        });
+        this.input.keyboard.on('keyup_Q', function (event) {
+            if (moveKeys['right'].isUp)
+                ship.fuel -=1;
+                ship.setAccelerationX(0);
+        });
+        this.input.keyboard.on('keyup_D', function (event) {
+            if (moveKeys['left'].isUp)
+                ship.fuel -=1;
+                ship.setAccelerationX(0);
+        });
+        this.constrainVelocity(ship, 500);
+
+    }
+    //SpeedLimit
+    constrainVelocity(sprite, maxVelocity){
+        if (!sprite || !sprite.body)
+          return;
+    
+        var angle, currVelocitySqr, vx, vy;
+        vx = sprite.body.velocity.x;
+        vy = sprite.body.velocity.y;
+        currVelocitySqr = vx * vx + vy * vy;
+    
+        if (currVelocitySqr > maxVelocity * maxVelocity)
+        {
+            angle = Math.atan2(vy, vx);
+            vx = Math.cos(angle) * maxVelocity;
+            vy = Math.sin(angle) * maxVelocity;
+            sprite.body.velocity.x = vx;
+            sprite.body.velocity.y = vy;
         }
     }
 }
