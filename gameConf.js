@@ -1,5 +1,5 @@
 var gameSettings = {
-    playerSpeed: 200,
+    playerSpeed: 800,
     ship: null,
     healthpoints: null,
     reticle: null,
@@ -14,6 +14,7 @@ var gameSettings = {
     //height: 272,
     width: 1280,
     height: 720,
+    type: Phaser.AUTO,
     backgroundColor: 0x000000,
     scene: [Intro, Scene2],
     pixelArt: true,
