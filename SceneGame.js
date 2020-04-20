@@ -214,7 +214,10 @@ class SceneGame extends Phaser.Scene{
         }, this);
     }
     gameOver(ship,item){
+        game.input.mouse.releasePointerLock();
+        this.music.stop();
         this.scene.start("gameOver");
+        this.scene.stop("playGame");
         
     }
     fireBullet(target){
