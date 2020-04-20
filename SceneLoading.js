@@ -25,6 +25,7 @@ class SceneLoading extends Phaser.Scene{
         this.load.audio("explo","assets/sounds/explo.wav");
         this.load.audio("powerUp","assets/sounds/powerUp.wav");
         this.load.audio("dammage","assets/sounds/dammage.wav");
+        this.load.audio("musicTheme","assets/musics/KeepSpaceAlive3.mp3");
         
     }
     create(){
