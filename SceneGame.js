@@ -211,6 +211,6 @@ class SceneGame extends Phaser.Scene{
     }
     fireBullet(target){
         let fire = new Bullet(this).fire(target);
-        
+        this.bulletSound.play();
     }
 }
