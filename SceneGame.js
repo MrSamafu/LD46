@@ -5,14 +5,15 @@ class SceneGame extends Phaser.Scene{
     create(){
 
         //World and camera config
-        this.physics.world.setBounds(0, 0, 4000, 4000);
-        this.cameras.main.setBounds(0,0,4000,4000).setName("main");
+        this.physics.world.setBounds(0, 0, gameSettings.worldWidth, gameSettings.worldHeight);
+        this.cameras.main.setBounds(0,0, gameSettings.worldWidth, gameSettings.worldHeight).setName("main");
 
         //load image and sprite
         this.enemy = this.add.sprite(100,100,"enemy1");
         this.asteroids = this.physics.add.group();
-        this.ship = this.physics.add.sprite(2000, 2000, "ship");
-        this.target = this.physics.add.sprite(2000,2100,"target").setScale(4);
+        this.ship = this.physics.add.sprite(gameSettings.worldWidth/2, gameSettings.worldHeight/2, "player");
+        this.ship.play("thrust");
+        this.target = this.physics.add.sprite(gameSettings.worldWidth/2, gameSettings.worldHeight/2+100,"target").setScale(4);
         this.powerUp = this.physics.add.group();
         this.bullet = this.physics.add.sprite(0,0,"bullet")
 
@@ -22,7 +23,7 @@ class SceneGame extends Phaser.Scene{
 
         // Set image/sprite properties
         this.ship.body.collideWorldBounds = true;
-        this.ship.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true).setDrag(500, 500);
+        this.ship.setOrigin(0.5, 0.5).setDisplaySize(gameSettings.playerShipSize, gameSettings.playerShipSize).setCollideWorldBounds(true).setDrag(500, 500);
         this.target.setOrigin(0.5, 0.5).setDisplaySize(18, 18).setCollideWorldBounds(true);
         //this.enemy.setOrigin(0.5, 0.5).setDisplaySize(64, 64).setCollideWorldBounds(true);
 
@@ -88,7 +89,7 @@ class SceneGame extends Phaser.Scene{
         group.createMultiple({ key: 'starLight4', frameQuantity: 50 });
         
 
-        var rect = new Phaser.Geom.Rectangle(0, 0, 4000, 4000);
+        var rect = new Phaser.Geom.Rectangle(0, 0, gameSettings.worldWidth, gameSettings.worldHeight);
 
         Phaser.Actions.RandomRectangle(group.getChildren(), rect);
 
@@ -106,7 +107,7 @@ class SceneGame extends Phaser.Scene{
         for(let i = 0; i <= maxObject; i++){
             let asteroids =  this.physics.add.sprite(150, 150, "asteroid");
             asteroid.add(asteroids);
-            asteroids.setRandomPosition(100 , 100, 3900, 3900);
+            asteroids.setRandomPosition(100 , 100, gameSettings.worldWidth-100, gameSettings.worldHeight-100);
             asteroids.setVelocity(Phaser.Math.Between(-100, 100), Phaser.Math.Between(-100, 100));
             asteroids.setCollideWorldBounds(true);
             asteroids.setBounce(1);
@@ -122,7 +123,7 @@ class SceneGame extends Phaser.Scene{
             'right': Phaser.Input.Keyboard.KeyCodes.D
         });
         // Rotates player to face towards reticle
-        ship.rotation = Phaser.Math.Angle.Between(ship.x, ship.y, target.x, target.y);
+        ship.rotation = Phaser.Math.Angle.Between(ship.x, ship.y, target.x, target.y)+Phaser.Math.DegToRad(90);
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_Z', function (event) {
             ship.fuel -=1;
@@ -161,7 +162,7 @@ class SceneGame extends Phaser.Scene{
                 ship.fuel -=1;
                 ship.setAccelerationX(0);
         });
-        this.constrainVelocity(ship, 500);
+        this.constrainVelocity(ship, gameSettings.maxVelocity);
 
     }
     //SpeedLimit

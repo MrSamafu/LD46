@@ -20,6 +20,11 @@ class SceneLoading extends Phaser.Scene{
         this.load.image("enemy1", "assets/sprites/Enemy/enemy/enemy14.png");
         this.load.image("asteroid", "assets/sprites/Decor/asteroide.png");
 
+        this.load.spritesheet("player", "assets/sprites/Character/player.png",{
+            frameWidth: 24,
+            frameHeight: 24
+          });
+
         //sound load
         this.load.audio("sndLaser", "assets/sounds/laser.mp3");
         this.load.audio("sndExplo","assets/sounds/explo.mp3");
@@ -32,6 +37,13 @@ class SceneLoading extends Phaser.Scene{
 
         this.add.text(20,20,"Loading game...");
         this.scene.start("Menu");
+
+        this.anims.create({
+            key: "thrust",
+            frames: this.anims.generateFrameNumbers("player"),
+            frameRate: 20,
+            repeat: -1
+          });
         
         
     }
