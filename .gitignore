@@ -2,6 +2,7 @@
 mongoose*.exe
 #
 greg/
+alt/
 # Godot-specific ignores
 .import/
 export.cfg
