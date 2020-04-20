@@ -14,6 +14,7 @@ class SceneGame extends Phaser.Scene{
         this.ship = this.physics.add.sprite(2000, 2000, "ship");
         this.target = this.physics.add.sprite(2000,2100,"target").setScale(4);
         this.powerUp = this.physics.add.group();
+        this.bullet = this.physics.add.sprite(0,0,"bullet")
 
         //Background
         this.createStarfield();
@@ -59,13 +60,19 @@ class SceneGame extends Phaser.Scene{
             delay: 0
         }
         this.music.play(musicConfig);
-                
+        this.input.on("pointerdown",function(pointer){
+            if(pointer.leftButtonDown()){
+                this.fireBullet(this.target);
+            }
+        },this)    
     }
     update(){
         //Make reticle move with player
         this.target.body.velocity.x = this.ship.body.velocity.x;
         this.target.body.velocity.y = this.ship.body.velocity.y;
         this.movePlayerManager(this.ship,this.target);
+        
+        
     }
     //Create the animated background
     createStarfield ()
@@ -198,7 +205,11 @@ class SceneGame extends Phaser.Scene{
         }, this);
     }
     gameOver(ship,item){
-        
         this.scene.start("gameOver");
+        
+    }
+    fireBullet(target){
+        let fire = new Bullet(this).fire(target);
+        
     }
 }

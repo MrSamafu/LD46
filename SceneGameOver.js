@@ -3,9 +3,7 @@ class SceneGameOver extends Phaser.Scene{
         super("gameOver");
     }
     create(){
-
-        this.physics.world.setBounds(0, 0, 1280, 720);
-        this.cameras.main.setBounds(0,0,1280,720);
+        this.scene.stop("playGame");
         this.add.text(100,100,"Game Over", {font: "25px Arial", fill: "red"});
     }
 }
