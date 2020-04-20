@@ -1,5 +1,9 @@
 var gameSettings = {
+    maxVelocity:500,
     playerSpeed:800,
+    playerShipSize:24,
+    worldWidth:4000,
+    worldHeight:4000,
 }
 const config = {
     width : 1280,
