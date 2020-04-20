@@ -49,6 +49,7 @@ class SceneGame extends Phaser.Scene{
             child.setScrollFactor(sf);
         }, this);
     }
+    
     //Create asteroids field
     asteroidField(asteroid,maxObject){
         for(let i = 0; i <= maxObject; i++){
