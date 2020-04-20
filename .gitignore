@@ -1,5 +1,7 @@
 #webserver mongoose https://cesanta.com/binary.html
 mongoose*.exe
+#
+greg/
 # Godot-specific ignores
 .import/
 export.cfg
