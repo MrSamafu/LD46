@@ -9,7 +9,9 @@ class Bullet extends Phaser.GameObjects.Sprite{
         this.direction = 0;
         this.xSpeed = 0;
         this.ySpeed = 0;
-         
+        scene.physics.world.enableBody(this);
+        scene.add.existing(this);
+
     }
     fire(target){
         this.setPosition(this.x, this.y); // Initial position
