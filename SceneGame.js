@@ -18,8 +18,26 @@ class SceneGame extends Phaser.Scene{
 
         //Physics and collider
         this.physics.add.collider(this.asteroids,this.asteroids);
-        
-        
+
+        //Sounds
+        this.bulletSound = this.sound.add("sndLaser");
+        this.exploSound = this.sound.add("sndExplo");
+        this.powerUpSound = this.sound.add("sndPowerUp");
+        this.hitSound = this.sound.add("sndHit");
+
+        //Music
+        this.music = this.sound.add("sndMusic");
+        var musicConfig = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        }
+        this.music.play(musicConfig);
+                
     }
 
     //Create the animated background
