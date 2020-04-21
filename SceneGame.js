@@ -13,8 +13,8 @@ class SceneGame extends Phaser.Scene{
         this.asteroids = this.physics.add.group();
         this.ship = this.physics.add.sprite(gameSettings.worldWidth/2, gameSettings.worldHeight/2, "player");
         this.ship.play("thrust");
-        this.target = this.physics.add.sprite(gameSettings.worldWidth/2, gameSettings.worldHeight/2+100,"target").setScale(4);
-        this.powerUp = this.physics.add.group();
+        this.target = this.physics.add.sprite(gameSettings.worldWidth/2, gameSettings.worldHeight/2+100,"target").setScale(4);   
+        this.powerUp = this.physics.add.sprite(16, 16, "powerup");
         this.bullet = this.physics.add.sprite(0,0,"bullet");
         this.textEnergy = this.add.text(0,0,"Energy");
         this.lifeBarIn = this.physics.add.image(gameSettings.worldWidth/2,gameSettings.worldWidth/2 - 100,"lifeBarIn");
@@ -23,6 +23,7 @@ class SceneGame extends Phaser.Scene{
         
 
         this.projectiles = this.add.group();
+        this.powerUps = this.physics.add.group();
 
         //Background
         this.createStarfield();
@@ -48,6 +49,7 @@ class SceneGame extends Phaser.Scene{
         this.physics.add.overlap(this.ship,this.asteroids,this.gameOver,null,this);
         
         this.physics.add.overlap(this.projectiles, this.asteroids, this.hitAsteroids, null, this);
+        this.physics.add.overlap(this.ship,this.powerUps, this.hitPowerUps, null, this);
 
 
         //the target
@@ -131,6 +133,14 @@ class SceneGame extends Phaser.Scene{
         projectile.destroy();
         asteroid.destroy();
         this.exploSound.play();
+        var kk = new Power(this, asteroid.x, asteroid.y);
+    }
+
+    hitPowerUps(powerUps) {
+        powerUps.destroy();
+        gameSettings.maxEnergy+=1000;
+        this.powerUpSound.play;
+
     }
 
     //Create the animated background
