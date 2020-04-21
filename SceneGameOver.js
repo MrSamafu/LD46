@@ -4,6 +4,12 @@ class SceneGameOver extends Phaser.Scene{
     }
     create(){
         this.scene.stop("playGame");
+
+        let score = this.add.text(100,100,"Score : " + gameSettings.score)
+        score.setOrigin(0.5,0.5).setDisplaySize(300,100);
+        score.setPosition(config.width*0.5,config.height*0.5 - 250);
+
+        
         let gameOver = this.add.text(100,100,"Game Over", {font: "25px Arial", fill: "red"});
         gameOver.setOrigin(0.5,0.5).setDisplaySize(500,100);
         gameOver.setPosition(config.width*0.5,config.height*0.5 - 150);

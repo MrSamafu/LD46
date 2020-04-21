@@ -4,6 +4,9 @@ class SceneGame extends Phaser.Scene{
     }
     create(){
 
+        gameSettings.score = 0;
+        gameSettings.asteroids = 0;
+
         //World and camera config
         this.physics.world.setBounds(0, 0, gameSettings.worldWidth, gameSettings.worldHeight);
         this.cameras.main.setBounds(0,0, gameSettings.worldWidth, gameSettings.worldHeight).setName("main");
@@ -18,6 +21,7 @@ class SceneGame extends Phaser.Scene{
         this.powerUp = this.add.sprite(16, 16, "powerup");
         this.bullet = this.physics.add.sprite(0,0,"bullet");
         this.textEnergy = this.add.text(0,0,"Energy");
+        this.textScore = this.add.text(0,0,"");
         this.lifeBarIn = this.physics.add.image(gameSettings.worldWidth/2,gameSettings.worldWidth/2 - 100,"lifeBarIn");
         this.lifeBarOut = this.physics.add.image(gameSettings.worldWidth/2,gameSettings.worldWidth/2 -100,"lifeBarOut");
         
@@ -28,7 +32,7 @@ class SceneGame extends Phaser.Scene{
 
         //Background
         this.createStarfield();
-        this.asteroidField(this.asteroids,40);
+        this.asteroidField(this.asteroids,gameSettings.maxAsteroid, gameSettings.difficulty);
 
         // Set image/sprite properties
         this.ship.body.collideWorldBounds = true;
@@ -106,14 +110,16 @@ class SceneGame extends Phaser.Scene{
         this.target.body.velocity.x = this.ship.body.velocity.x;
         this.target.body.velocity.y = this.ship.body.velocity.y;
         
-        this.lifeBar(this.lifeBarIn,this.lifeBarOut,this.ship, this.textEnergy);
+        this.lifeBar(this.lifeBarIn,this.lifeBarOut,this.ship, this.textEnergy, this.textScore);
 
         //call bullet update
         for (var i = 0; i < this.projectiles.getChildren().length; i++) {
             var bullet = this.projectiles.getChildren()[i];
             bullet.update();
           }
-        
+        if(gameSettings.asteroids <= 35){
+            this.asteroidField(this.asteroids,gameSettings.maxAsteroid, gameSettings.difficulty);
+        }
     }
 
     zeroPad(number, size){
@@ -136,13 +142,15 @@ class SceneGame extends Phaser.Scene{
         asteroid.destroy();
         this.exploSound.play();
         var kk = new Power(this, asteroid.x, asteroid.y);
+        gameSettings.asteroids -= 1;
+        gameSettings.score += 15;
     }
 
     hitPowerUps(ship,powerUps) {
         ship.body.velocity.x = ship.body.velocity.x;
         ship.body.velocity.y = ship.body.velocity.y;
         powerUps.destroy();
-        gameSettings.energy+=1000;
+        gameSettings.energy+=2000;
         this.powerUpSound.play;
 
     }
@@ -175,7 +183,10 @@ class SceneGame extends Phaser.Scene{
         }, this);
     }
     //Create asteroids field
-    asteroidField(asteroid,maxObject){
+    asteroidField(asteroid,maxObject,difficulty){
+        maxObject = maxObject * difficulty;
+        gameSettings.maxAsteroid = maxObject;
+        gameSettings.asteroids = gameSettings.maxAsteroid;
         for(let i = 0; i <= maxObject; i++){
             let asteroids =  this.physics.add.sprite(150, 150, "asteroid");
             asteroid.add(asteroids);
@@ -184,6 +195,8 @@ class SceneGame extends Phaser.Scene{
             asteroids.setCollideWorldBounds(true);
             asteroids.setBounce(1);
         }
+        
+        
     }
     //PlayerMovement an input control
     movePlayerManager(ship,target){
@@ -286,9 +299,12 @@ class SceneGame extends Phaser.Scene{
     }
     fireBullet(target){
         let fire = new Bullet(this);
+        gameSettings.energy -= 500;
         this.bulletSound.play();
     }
-    lifeBar(lifeBarIn, lifeBarOut, ship, text){
+    lifeBar(lifeBarIn, lifeBarOut, ship, text, score){
+        score.setPosition(ship.x-50,ship.y - 67);
+        score.setText("Score : " + gameSettings.score)
         text.setPosition(ship.x-50,ship.y - 57);
         lifeBarOut.setPosition(ship.x-50,ship.y - 40);
         lifeBarIn.setPosition(ship.x-50,ship.y - 40);

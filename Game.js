@@ -6,6 +6,10 @@ var gameSettings = {
     worldHeight:4000,
     maxEnergy: 40000,
     energy: 40000,
+    asteroids: 0,
+    maxAsteroid: 40,
+    difficulty : 1,
+    score: 0
 }
 const config = {
     width : 1280,
