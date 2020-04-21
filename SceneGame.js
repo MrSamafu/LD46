@@ -47,11 +47,11 @@ class SceneGame extends Phaser.Scene{
         this.enemy.lastFired = 0;
         //Physics and collider
         this.physics.add.collider(this.asteroids,this.asteroids);
-        this.physics.add.overlap(this.ship,this.asteroids,this.gameOver,null,this);
         
+        this.physics.add.overlap(this.ship,this.asteroids,this.hitShip,null,this);
         this.physics.add.overlap(this.projectiles, this.asteroids, this.hitAsteroids, null, this);
         this.physics.add.overlap(this.ship,this.powerUps, this.hitPowerUps, null, this);
-
+        this.physics.add.collider(this.ship,this.asteroids);
 
         //the target
         this.pointerTarget(this.target, this.ship);
@@ -303,5 +303,10 @@ class SceneGame extends Phaser.Scene{
         }
         
         lifeBarOut.setDisplaySize(100,10);
+    }
+    hitShip(ship, asteroid){
+        ship.body.velocity.x = ship.body.velocity.x;
+        ship.body.velocity.y = ship.body.velocity.y;
+        gameSettings.energy -= 1000;
     }
 }
