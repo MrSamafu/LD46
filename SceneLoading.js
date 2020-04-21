@@ -12,7 +12,7 @@ class SceneLoading extends Phaser.Scene{
         this.load.image("ammo","assets/sprites/PowerUp/Ammo.png");
         this.load.image("fuel","assets/sprites/PowerUp/fuel.png");
         this.load.image("life","assets/sprites/PowerUp/Life.png");
-        this.load.image("powerup","assets/sprites/PowerUp/powerup.png");
+        this.load.image("powerup","assets/sprites/PowerUp/Life.png");
         this.load.image("starLight1", "assets/sprites/Decor/starsLight1.png");
         this.load.image("starLight2", "assets/sprites/Decor/starsLight2.png");
         this.load.image("starLight3", "assets/sprites/Decor/starsLight3.png");
