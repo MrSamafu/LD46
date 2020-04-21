@@ -12,9 +12,10 @@ class SceneGame extends Phaser.Scene{
         this.enemy = this.add.sprite(100,100,"enemy1");
         this.asteroids = this.physics.add.group();
         this.ship = this.physics.add.sprite(gameSettings.worldWidth/2, gameSettings.worldHeight/2, "player");
+        this.ship.body.enable;
         this.ship.play("thrust");
         this.target = this.physics.add.sprite(gameSettings.worldWidth/2, gameSettings.worldHeight/2+100,"target").setScale(4);   
-        this.powerUp = this.physics.add.sprite(16, 16, "powerup");
+        this.powerUp = this.add.sprite(16, 16, "powerup");
         this.bullet = this.physics.add.sprite(0,0,"bullet");
         this.textEnergy = this.add.text(0,0,"Energy");
         this.lifeBarIn = this.physics.add.image(gameSettings.worldWidth/2,gameSettings.worldWidth/2 - 100,"lifeBarIn");
@@ -101,9 +102,10 @@ class SceneGame extends Phaser.Scene{
     }
     update(){
         //Make reticle move with player
+        this.movePlayerManager(this.ship,this.target);
         this.target.body.velocity.x = this.ship.body.velocity.x;
         this.target.body.velocity.y = this.ship.body.velocity.y;
-        this.movePlayerManager(this.ship,this.target);
+        
         this.lifeBar(this.lifeBarIn,this.lifeBarOut,this.ship, this.textEnergy);
 
         //call bullet update
@@ -136,9 +138,11 @@ class SceneGame extends Phaser.Scene{
         var kk = new Power(this, asteroid.x, asteroid.y);
     }
 
-    hitPowerUps(powerUps) {
+    hitPowerUps(ship,powerUps) {
+        ship.body.velocity.x = ship.body.velocity.x;
+        ship.body.velocity.y = ship.body.velocity.y;
         powerUps.destroy();
-        gameSettings.maxEnergy+=1000;
+        gameSettings.energy+=1000;
         this.powerUpSound.play;
 
     }
@@ -194,40 +198,40 @@ class SceneGame extends Phaser.Scene{
         ship.rotation = Phaser.Math.Angle.Between(ship.x, ship.y, target.x, target.y)+Phaser.Math.DegToRad(90);
         // Enables movement of player with WASD keys
         this.input.keyboard.on('keydown_Z', function (event) {
-            gameSettings.energy -=1;
+            gameSettings.energy -= 2;
             ship.setAccelerationY(-gameSettings.playerSpeed);   
         });
         this.input.keyboard.on('keydown_S', function (event) {
-            gameSettings.energy -=1;
+            gameSettings.energy -= 2;
             ship.setAccelerationY(gameSettings.playerSpeed);  
         });
         this.input.keyboard.on('keydown_Q', function (event) {
-            gameSettings.energy -=1;
+            gameSettings.energy -= 2;
             ship.setAccelerationX(-gameSettings.playerSpeed);   
         });
         this.input.keyboard.on('keydown_D', function (event) {
-            gameSettings.energy -=1;
+            gameSettings.energy -= 2;
             ship.setAccelerationX(gameSettings.playerSpeed);   
         });
         // Stops player acceleration on uppress of WASD keys
         this.input.keyboard.on('keyup_Z', function (event) {
             if (moveKeys['down'].isUp)
-                gameSettings.energy -=1;
+                
                 ship.setAccelerationY(0);
         });
         this.input.keyboard.on('keyup_S', function (event) {
             if (moveKeys['up'].isUp)
-                gameSettings.energy -=1;
+                
                 ship.setAccelerationY(0);
         });
         this.input.keyboard.on('keyup_Q', function (event) {
             if (moveKeys['right'].isUp)
-                gameSettings.energy -=1;
+                
                 ship.setAccelerationX(0);
         });
         this.input.keyboard.on('keyup_D', function (event) {
             if (moveKeys['left'].isUp)
-                gameSettings.energy -=1;
+                
                 ship.setAccelerationX(0);
         });
         this.constrainVelocity(ship, gameSettings.maxVelocity);
