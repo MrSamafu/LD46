@@ -197,7 +197,7 @@ class SceneGame extends Phaser.Scene{
         // Rotates player to face towards reticle
         ship.rotation = Phaser.Math.Angle.Between(ship.x, ship.y, target.x, target.y)+Phaser.Math.DegToRad(90);
         // Enables movement of player with WASD keys
-        this.input.keyboard.on('keydown_Z', function (event) {
+        this.input.keyboard.on('keydown_W', function (event) {
             gameSettings.energy -= 2;
             ship.setAccelerationY(-gameSettings.playerSpeed);   
         });
@@ -205,7 +205,7 @@ class SceneGame extends Phaser.Scene{
             gameSettings.energy -= 2;
             ship.setAccelerationY(gameSettings.playerSpeed);  
         });
-        this.input.keyboard.on('keydown_Q', function (event) {
+        this.input.keyboard.on('keydown_A', function (event) {
             gameSettings.energy -= 2;
             ship.setAccelerationX(-gameSettings.playerSpeed);   
         });
@@ -214,7 +214,7 @@ class SceneGame extends Phaser.Scene{
             ship.setAccelerationX(gameSettings.playerSpeed);   
         });
         // Stops player acceleration on uppress of WASD keys
-        this.input.keyboard.on('keyup_Z', function (event) {
+        this.input.keyboard.on('keyup_W', function (event) {
             if (moveKeys['down'].isUp)
                 
                 ship.setAccelerationY(0);
@@ -224,7 +224,7 @@ class SceneGame extends Phaser.Scene{
                 
                 ship.setAccelerationY(0);
         });
-        this.input.keyboard.on('keyup_Q', function (event) {
+        this.input.keyboard.on('keyup_A', function (event) {
             if (moveKeys['right'].isUp)
                 
                 ship.setAccelerationX(0);
@@ -262,8 +262,8 @@ class SceneGame extends Phaser.Scene{
             game.input.mouse.requestPointerLock();
         });
 
-        // Exit pointer lock when A or escape (by default) is pressed.
-        this.input.keyboard.on('keydown_A', function (event) {
+        // Exit pointer lock when Q or escape (by default) is pressed.
+        this.input.keyboard.on('keydown_Q', function (event) {
             if (game.input.mouse.locked)
                 game.input.mouse.releasePointerLock();
         }, 0, this);
