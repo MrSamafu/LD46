@@ -263,7 +263,7 @@ class SceneGame extends Phaser.Scene{
         });
 
         // Exit pointer lock when Q or escape (by default) is pressed.
-        this.input.keyboard.on('keydown_A', function (event) {
+        this.input.keyboard.on('keydown_Q', function (event) {
             if (game.input.mouse.locked)
                 game.input.mouse.releasePointerLock();
         }, 0, this);
